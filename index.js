@@ -12,6 +12,7 @@ const bot = mineflayer.createBot({
   port: 42139,                   
   username: 'SloboAI_Friend',    
   auth: 'offline'
+  version: '1.21.4'
 });
 
 // Load the pathfinder engine
