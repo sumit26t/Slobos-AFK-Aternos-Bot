@@ -17,17 +17,23 @@ const bot = mineflayer.createBot({
 // Load the pathfinder engine
 bot.loadPlugin(pathfinder);
 
-// Establish the movement grid ONLY after the bot successfully spawns in the world
+// Establish the movement grid safely AFTER the bot logs in and chunks load
 bot.on('spawn', () => {
-  console.log(`${bot.username} has spawned! Configuring movement maps...`);
+  console.log(`${bot.username} has spawned! Waiting 3 seconds for world stability...`);
   
-  // This loads the correct physical properties matching your server's Minecraft version
-  const mcData = require('minecraft-data')(bot.version);
-  const movements = new Movements(bot, mcData);
-  
-  // Allow the bot to jump and move freely over standard terrain blocks
-  movements.allowFreeMotion = true;
-  bot.pathfinder.setMovements(movements);
+  setTimeout(() => {
+    try {
+      const mcData = require('minecraft-data')(bot.version);
+      if (mcData) {
+        const movements = new Movements(bot, mcData);
+        movements.allowFreeMotion = true;
+        bot.pathfinder.setMovements(movements);
+        console.log("Movement maps successfully configured! Bot is fully active.");
+      }
+    } catch (error) {
+      console.log("Movement config skipped or failed, running in basic mode:", error);
+    }
+  }, 3000); // 3-second delay prevents Aternos lag kicks
 });
 
 // 2. Chat and AI Command Listener
