@@ -8,8 +8,8 @@ const ai = new GoogleGenAI({});
 
 // 1. Create the Minecraft Bot Connection
 const bot = mineflayer.createBot({
-  host: 'yourserver.aternos.me',  // <--- Double check your Aternos IP here!
-  port: 25565,                   
+  host: 'Heronrinesmp.aternos.me',  // <--- Double check your Aternos IP here!
+  port: 42139,                   
   username: 'SloboAI_Friend',    
   auth: 'offline'
   version: '1.21.4'
