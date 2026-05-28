@@ -1,14 +1,13 @@
 {
   "name": "slobos-ai-companion",
   "version": "1.0.0",
-  "description": "An AI Minecraft Companion built with Mineflayer and Gemini",
+  "description": "A fresh, stable AI Minecraft Best Friend",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "mineflayer": "4.20.0",
-    "mineflayer-pathfinder": "2.4.0",
     "@google/genai": "^0.1.1"
   }
 }
