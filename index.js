@@ -8,9 +8,9 @@ const ai = new GoogleGenAI({});
 
 // 1. Create the Minecraft Bot Connection
 const bot = mineflayer.createBot({
-  host: 'yourserver.aternos.me',  // <--- CHANGE THIS to your Aternos server IP!
-  port: 25565,                   // <--- CHANGE THIS to your Aternos port if different
-  username: 'SloboAI_Friend',    // Your bot's in-game name
+  host: 'Heronrinesmp.aternos.me',  // <--- CHANGE THIS to your Aternos server IP!
+  port: 42139,                   // <--- CHANGE THIS to your Aternos port if different
+  username: 'chita',    // Your bot's in-game name
   auth: 'offline'                // Crucial for Aternos Cracked mode
 });
 
