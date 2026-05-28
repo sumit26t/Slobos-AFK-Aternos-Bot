@@ -7,8 +7,8 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "mineflayer": "*",
-    "mineflayer-pathfinder": "*",
-    "@google/genai": "*"
+    "mineflayer": "4.20.0",
+    "mineflayer-pathfinder": "2.4.0",
+    "@google/genai": "^0.1.1"
   }
 }
