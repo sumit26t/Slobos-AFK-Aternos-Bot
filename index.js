@@ -73,7 +73,7 @@ bot.on('chat', async (username, message) => {
   }
 
   // --- STOP WALKING ---
-  if (msgLower === 'stop' || msgLower === 'ruk jao') {
+  if (msgLower === 'stop' || msgLower === 'ruk') {
     bot.chat("Standing guard right here.");
     bot.pathfinder.setGoal(null);
     return;
