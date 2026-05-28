@@ -3,52 +3,61 @@ const { pathfinder, Movements, goals } = require('mineflayer-pathfinder');
 const GoalFollow = goals.GoalFollow;
 const { GoogleGenAI } = require('@google/genai');
 
-// Initialize Gemini AI (Reads GEMINI_API_KEY safely from Railway environment variables)
+// Initialize Gemini AI
 const ai = new GoogleGenAI({});
 
 // 1. Create the Minecraft Bot Connection
 const bot = mineflayer.createBot({
-  host: 'Heronrinesmp.aternos.me',  // <--- CHANGE THIS to your Aternos server IP!
-  port: 42139,                   // <--- CHANGE THIS to your Aternos port if different
-  username: 'chita',    // Your bot's in-game name
-  auth: 'offline'                // Crucial for Aternos Cracked mode
+  host: 'yourserver.aternos.me',  // <--- Double check your Aternos IP here!
+  port: 25565,                   
+  username: 'SloboAI_Friend',    
+  auth: 'offline'                
 });
 
-// Load the pathfinder leg mechanics
+// Load the pathfinder engine
 bot.loadPlugin(pathfinder);
 
+// Establish the movement grid ONLY after the bot successfully spawns in the world
 bot.on('spawn', () => {
-  console.log(`${bot.username} joined the server! ready to hang out!`);
+  console.log(`${bot.username} has spawned! Configuring movement maps...`);
+  
+  // This loads the correct physical properties matching your server's Minecraft version
+  const mcData = require('minecraft-data')(bot.version);
+  const movements = new Movements(bot, mcData);
+  
+  // Allow the bot to jump and move freely over standard terrain blocks
+  movements.allowFreeMotion = true;
+  bot.pathfinder.setMovements(movements);
 });
 
-// 2. Continuous Chat and Logic Listener
+// 2. Chat and AI Command Listener
 bot.on('chat', async (username, message) => {
-  // Prevent the bot from replying to itself
   if (username === bot.username) return;
 
   const msgLower = message.toLowerCase();
   const playerEntity = bot.players[username]?.entity;
 
-  // --- COMPANION ACTIONS ---
+  // --- PHYSICAL MOVEMENT COMMANDS ---
   if (msgLower === 'come here' || msgLower === 'follow me') {
     if (!playerEntity) {
-      bot.chat("I can't see you! Get closer to me so I can track your position.");
+      // Emergency feature: If the bot is completely stuck out of render distance, try to teleport it
+      bot.chat("I can't see your character! Trying to teleport to you instead...");
+      bot.chat(`/tp @s ${username}`);
       return;
     }
+    
     bot.chat("Coming right to you!");
-    const movements = new Movements(bot);
-    bot.pathfinder.setMovements(movements);
-    bot.pathfinder.setGoal(new GoalFollow(playerEntity, 2), true); // Keep a 2-block distance
+    bot.pathfinder.setGoal(new GoalFollow(playerEntity, 2), true); // Keep a 2-block tracking distance
     return;
   }
 
   if (msgLower === 'stop') {
-    bot.chat("Staying right here.");
+    bot.chat("Stopping right here.");
     bot.pathfinder.setGoal(null);
     return;
   }
 
-  // --- GEMINI AI TALKING VOICE ---
+  // --- GEMINI AI CHAT BRAIN ---
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -60,12 +69,11 @@ bot.on('chat', async (username, message) => {
     }
   } catch (err) {
     console.error("AI Generation Failed: ", err);
-    bot.chat("My brain lag spiked for a second... what did you say?");
+    bot.chat("My brain lag spiked... what did you say?");
   }
 });
 
-// Automatically handle disconnections or server restarts
 bot.on('end', () => {
-  console.log("Disconnected from server. Reconnecting in 10 seconds...");
-  setTimeout(() => process.exit(1), 10000); // Exiting kills the container, forcing Railway to deploy a fresh, clean connection
+  console.log("Disconnected. Reconnecting in 10 seconds...");
+  setTimeout(() => process.exit(1), 10000);
 });
