@@ -11,7 +11,8 @@ const bot = mineflayer.createBot({
   host: 'yourserver.aternos.me',  // <--- Double check your Aternos IP here!
   port: 25565,                   
   username: 'SloboAI_Friend',    
-  auth: 'offline'                
+  auth: 'offline'
+  version: '1.21.4'
 });
 
 // Load the pathfinder engine
