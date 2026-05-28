@@ -43,17 +43,27 @@ bot.on('chat', async (username, message) => {
   const msgLower = message.toLowerCase();
   const playerEntity = bot.players[username]?.entity;
 
-  // --- NATURAL WALK COMMAND ---
+    // --- NATURAL SMOOTH FOLLOW ---
   if (msgLower === 'come here' || msgLower === 'follow me' || msgLower === 'chalo') {
-    if (!playerEntity) {
-      bot.chat("I can't see you! Call me again when you are closer, or type 'tp' to pull me over.");
-      return;
-    }
-    bot.chat("On my way! Let's go.");
-    bot.pathfinder.setGoal(new GoalFollow(playerEntity, 2), true); // Walks and runs naturally to a 2-block distance
+    bot.chat(`I'm on my way, ${username}! Let's explore together.`);
+    
+    if (followInterval) clearInterval(followInterval);
+    
+    // This moves the bot seamlessly toward your coordinate position without hitting you
+    followInterval = setInterval(() => {
+      const target = bot.players[username]?.entity;
+      if (target) {
+        // Move toward the player smoothly if they are further than 3 blocks away
+        const dist = bot.entity.position.distanceTo(target.position);
+        if (dist > 3) {
+          bot.chat(`/execute as @s run tp @s ~ ~ ~ facing entity ${username}`);
+          bot.chat(`/tp @s ^ ^ ^0.4`); // Walks forward smoothly 0.4 blocks toward you
+        }
+      }
+    }, 250); // Updates smoothly every quarter of a second
     return;
   }
-
+  
   // --- EMERGENCY TELEPORT (If stuck in a cave/hole) ---
   if (msgLower === 'tp' || msgLower === 'teleport') {
     bot.chat("Snapping to your location!");
